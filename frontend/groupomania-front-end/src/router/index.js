@@ -24,6 +24,12 @@ const routes = [
     name: 'profil user',
     component: () => import('../views/Profil.vue')
   },
+  {
+    path: '/apropos',
+    name: 'A_propos',
+    component: () => import('../views/Apropos.vue')
+
+  },
 
 ]
 
