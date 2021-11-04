@@ -3,7 +3,7 @@
       <router-link to="/accueil" ><img alt="Logo Groupomania" src="../assets/icon-left-font-monochrome-black.svg"></router-link>  
       <ul>
         <li> <router-link to="/accueil" title="accueil">Accueil</router-link></li>
-         <li> <router-link to="#" title="A propos"> A propos</router-link> </li>
+         <li> <router-link to="/apropos" title="A propos"> A propos</router-link> </li>
         <li> <router-link to="#" title="notifications">Notifications</router-link></li>
        <li class="menuderoulant">Mon compte <i class="fas fa-angle-down"></i>
          <ul class="sousmenu">

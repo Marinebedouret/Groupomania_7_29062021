@@ -76,7 +76,7 @@ export default {
                     alert("");
                 }
             })
-            .then()
+            .then(window.location.reload())
             .catch(error => console.log(error));
         }
 
