@@ -18,6 +18,8 @@
       <input id="password" type="password" name="password" placeholder="Mot de passe" required v-model="input.password"/>
       </div>
 
+      <div class="error-message">{{message}}</div>
+
       <button id="login-btn" type="submit">Connexion</button>
 
     </form>
@@ -27,6 +29,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'Login',
 
@@ -35,41 +38,46 @@ export default {
       input: {
         email:"",
         password: ""
-      }
+      },
+      message: "",
     }
   },
   methods: {
     login() {
-      let fieldsFormLogin = {
-        "email": this.input.email,
-        "password": this.input.password,
-      }
-      console.log(fieldsFormLogin)
-      let apiUrl = "http://localhost:3000/api/user/login"
-      let options = {
-        method: "POST",
-        body: JSON.stringify(fieldsFormLogin),
+      const email = this.input.email;
+      const password = this.input.password;
+
+      axios.post("http://localhost:3000/api/user/login",
+      {
+        email,
+        password
+      },
+      {
         headers: {
-          'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
-      }
-      console.log(options)
-      console.log(apiUrl)
 
-      fetch(apiUrl, options)
-      .then(response => response.json())
+      })
       //stockage des données utilisateur dans le localstorage
-      .then((response) => {
-        localStorage.setItem("token", response.token);
-        localStorage.setItem("id_users", response.userId);
-        localStorage.setItem("isAdmin", response.isAdmin);
+      .then(response => {
+        localStorage.setItem("token", JSON.stringify(response.data.token));
+        localStorage.setItem("id_users", JSON.stringify(response.data.userId))
         console.log(localStorage)
         this.$router.push("post");
         alert("Connexion réussi ! Vous allez être redirigé sur la page d'accueil du réseau social Groupomania !");
         window.location.href = "#/accueil"
       })
-     .catch(()=>{alert ('Désolé le serveur ne répond pas ! Veuillez réessayer plus tard !')});
+     .catch((error)=>{
+       if (error.response.status === 404) {
+         this.message = "Utilisateur inconnu";
+       }
+       if(error.response.status === 401) {
+         this.message = "Email ou mot de passe invalide";
+       }
+       if(error.response.status === 500) {
+         this.message = "Désolé le serveur ne répond pas ! Veuillez réessayer plus tard !"
+       }
+     });
     }
   }
 

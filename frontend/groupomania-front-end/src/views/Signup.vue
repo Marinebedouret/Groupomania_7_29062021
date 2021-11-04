@@ -54,6 +54,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'Signup',
 
@@ -71,29 +72,35 @@ export default {
   },
   methods: {
     signup() {
-      let fieldsForm = {
-        "first_name": this.input.first_name,
-        "name": this.input.name,
-        "email": this.input.email,
-        "password": this.input.password,
-        "passwordvalidator": this.input.passwordvalidator,
-        "job": this.input.job
-      }
-      console.log(fieldsForm)
-      let apiUrl = "http://localhost:3000/api/user/signup"
-      let options = {
-        method: "POST",
-        body: JSON.stringify(fieldsForm),
-        headers: {
-          'Accept': 'application/json',
+      const first_name = this.input.first_name;
+      const name = this.input.name;
+      const email = this.input.email;
+      const password = this.input.password;
+      const passwordvalidator = this.input.passwordvalidator;
+      const job = this.input.job
+      console.log(first_name)
+      console.log(name)
+      console.log(email)
+      console.log(password)
+      console.log(passwordvalidator)
+      console.log(job)
+
+      axios.post("http://localhost:3000/api/user/signup",
+      {
+        first_name,
+        name,
+        email,
+        password,
+        passwordvalidator,
+        job
+
+      },
+      {
+        headers: {'Accept': 'application/json',
           'Content-Type': 'application/json'
         }
-      }
-      console.log(options)
-      console.log(apiUrl)
 
-      fetch(apiUrl, options)
-      .then(response => response.json())
+      })
       .then((response) => {
         this.signup(response)
         console.log(response)
