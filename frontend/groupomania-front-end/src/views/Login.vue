@@ -60,10 +60,10 @@ export default {
       })
       //stockage des données utilisateur dans le localstorage
       .then(response => {
-        localStorage.setItem("token", JSON.stringify(response.data.token));
-        localStorage.setItem("id_users", JSON.stringify(response.data.userId))
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('id_users', response.data.userId);
         console.log(localStorage)
-        this.$router.push("post");
+        this.$router.push('post');
         alert("Connexion réussi ! Vous allez être redirigé sur la page d'accueil du réseau social Groupomania !");
         window.location.href = "#/accueil"
       })

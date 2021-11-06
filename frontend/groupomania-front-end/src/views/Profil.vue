@@ -63,6 +63,7 @@
     
 </template>
 <script>
+import axios from 'axios';
 import headers from '../components/header.vue';
 export default {
     name: 'Profil',
@@ -89,18 +90,14 @@ export default {
         }
     },
     mounted () {
-      let apiUrl = `http://localhost:3000/api/user/${ this.userProfil.id_users }`;
-      let options = {
-          method: "GET",
+      axios.get(`http://localhost:3000/api/user/${ this.userProfil.id_users }`,
+      {
           headers:{
-              'Authorization': 'Bearer ' + localStorage.getItem("token"),
+              'Authorization': "Bearer "+ localStorage.getItem("token"),
               'Content-Type': 'application/json'
           }
-      };
-      console.log(apiUrl)
-      console.log(options)
-      fetch(apiUrl,options)
-        .then(response => response.json())
+
+      })
         .then(data => {
             console.log(data)
             this.userProfil.first_name = data.first_name;
@@ -113,26 +110,25 @@ export default {
     methods:{
         //Modification pour les informations générales du compte utilisateur
         modifyOneUser(){
-            let modifyUser = {
-                "first_name" : this.input.first_name,
-                "name": this.input.name,
-                "email": this.input.email,
-                "job": this.input.job,
-                "id_users": this.id_users,
-            }
-            console.log(modifyUser)
-            let apiUrl = "http://localhost:3000/api/user" + "/" + this.id_users;
-            let options = {
-                method: "PUT",
-                body: JSON.stringify(modifyUser),
+            const first_name = this.input.first_name;
+            const name = this.input.name;
+            const email = this.input.email;
+            const job = this.input.job;
+    
+            axios.put("http://localhost:3000/api/user" + "/" + this.id_users,
+            {
+                id_users: this.id_users,
+                first_name,
+                name,
+                email,
+                job
+
+            },
+            {
                 headers:{'Authorization': 'Bearer ' + localStorage.getItem("token"),
                 'Content-Type': 'application/json'}
-            }
-            console.log(apiUrl);
-            console.log(options);
 
-            fetch(apiUrl, options)
-            .then(response => response.json())
+            })
             .then((response) => {
                 console.log(response)
                 if(response.ok) {
@@ -148,22 +144,18 @@ export default {
     },
     //supprimer un utilisateur
         deleteUser() {
-            let deleteUser = {
-                "id_users": this.id_users
-
-            }
-            console.log(deleteUser);
-            let apiUrl = "http://localhost:3000/api/user/delete" + "/" + this.id_users;
-            let options = {
-                method: "DELETE",
-                body: JSON.stringify(deleteUser),
-                headers: {
+            axios.delete("http://localhost:3000/api/user/delete" + "/" + this.id_users,
+            {
+                id_users: this.id_users
+            },
+            {
+                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("token"),
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
-            };
-            fetch(apiUrl, options)
+
+            })
             .then((response) => {
                 console.log(response)
                 localStorage.clear()
