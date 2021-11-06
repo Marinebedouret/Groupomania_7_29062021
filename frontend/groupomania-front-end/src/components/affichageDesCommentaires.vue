@@ -8,10 +8,12 @@
         <h2> Commentaires :</h2>
         <div class="comment">
             <div v-for="comment in comments" :key="comment.id_comment">
-                <div class="comment_infos"> Par {{comment.user.first_name}} {{comment.user.name}} le {{comment.created_at}} 
+                <div class="comment_infos"> 
+                    <span>Posté le {{ dateFormat(comment.created_at)}} </span>
+                   
                 </div>
                 <div class="viewText">
-                     <p>{{ comment.text}}</p>
+                     <p>{{comment.text}}</p>
                 </div>
             
             </div>
@@ -21,7 +23,11 @@
 </template>
 
 <script>
+import axios from 'axios';
+import moment from 'moment';
+
 export default {
+
     name: "Comments",
     data() {
         return{
@@ -31,17 +37,17 @@ export default {
     },
     props:{
         id_post: Number,
-        id_users: Number,
+        id_users: Number
     },
     mounted() {
         //Obtenir tous les commentaires pour chaque posts
-        let apiUrl = "http://localhost:3000/api/comment/" + this.id_post;
-        let options = {
-            method: "GET",
-            headers: { 'Authorization': 'Bearer ' + localStorage.getItem("token")}
-        };
-        fetch(apiUrl, options)
-        .then(response => response.json())
+        axios.get("http://localhost:3000/api/comment/" + this.id_post,
+        {
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')}
+
+        })
         .then(data => {
             console.log (data)
             this.comments = data;
@@ -49,34 +55,34 @@ export default {
         })
         .catch(error => console.log(error))
     },
-    //création d'un commentaire
     methods: {
-        createComment() {
-            let textComment = {
-                "text": this.text,
-                "id_post": this.id_post,
-                "id_users": this.id_users
+        //Affiche la date de publication du commentaire
+        dateFormat(date){
+            if(date) {
+                return moment(String(date)).format('DD/MM/YYYY')
             }
-            let apiUrl = "http://localhost:3000/api/comment"
-            let options = {
-                method: "POST",
-                body: JSON.stringify(textComment),
+
+        },
+        //Création d'un commentaire
+        createComment() {
+            axios.post("http://localhost:3000/api/comment",
+            {
+               text: this.text,
+               id_users: this.id_users,
+               id_post: this.id_post
+            },
+            {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("token"),
                     'Content-Type' : 'application/json'
                 }
-            };
-            fetch(apiUrl, options)
-            .then(response => response.json())
-            .then((response) => {
-                console.log(response)
-                if (response.ok) {
-                    this.text = {}
-                } else {
-                    alert("");
-                }
+
             })
-            .then(window.location.reload())
+            .then(() => {
+                window.location.reload()
+
+               
+            })
             .catch(error => console.log(error));
         }
 
