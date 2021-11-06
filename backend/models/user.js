@@ -14,16 +14,19 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       User.hasMany(models.Post,{
         foreignKey: 'id_users',
+        as:'posts',
         onDelete: 'CASCADE'
       });
       User.hasMany(models.Like, {
         foreignKey: 'id_users',
+        as: 'likes',
         onDelete:'CASCADE'
       });
       User.hasMany(models.Status);
       User.hasMany(models.Notification);
       User.hasMany(models.Comment, {
         foreignKey: 'id_users',
+        as:'comments',
         onDelete: 'CASCADE'
       });
     }
@@ -54,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
     job: {
       type: DataTypes.STRING,
     },
-    picture:{
+    avatar:{
       type: DataTypes.STRING,
     },
     isAdmin: {

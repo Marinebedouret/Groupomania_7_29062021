@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         {
           foreignKey: 'id_users',
           as: 'user',
-          //onDelete: 'CASCASE',
+          onDelete: 'CASCASE',
         }),
       Like.belongsTo(models.Post,
           {

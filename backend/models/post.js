@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Post.hasMany(models.Notification);
       Post.hasMany(models.Like,{
         foreignKey:'id_post',
-        as: 'likes',
+        as: 'like',
         onDelete: 'CASCADE'
       });
       Post.hasMany(models.Comment,{
