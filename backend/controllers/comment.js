@@ -26,7 +26,7 @@ exports.deleteComment = (req, res, next) => {
 
 //Afficher tous les commentaires
 exports.getAllComment = (req, res, next) => {
-    models.Comment.findAll({where:{id_post: req.params.id},
+    models.Comment.findAll({
         include: ["user", "post"]
     })
     .then((comments) => res.status(200).json(comments))
@@ -35,8 +35,11 @@ exports.getAllComment = (req, res, next) => {
 
 //Afficher un commentaire en fonction de l'id
 exports.getOneComment = (req, res, next) => {
-    models.Comment.findOne({where: {id_post: req.body.id_post}})
-    .then(comment => {
+    models.Comment.findOne({where: {id_post: req.body.id_post, id_users: req.body.id_users},
+        include: ["user", "post"]
+    })
+    
+    .then((comment) => {
         console.log(comment);
         res.status(200).json(comment)
     })
