@@ -2,8 +2,8 @@
     <div class="Profil">
         <headers/>
         <div class="infosUser">
-             <h2> Bienvenue <span>{{userProfil.first_name}}</span> <span>{{userProfil.name}}</span>, </h2>
-                <p> Vous êtes inscrit sur le reseau social Groupomania depuis le <span>{{ userProfil.created_at }}</span> en tant que : {{userProfil.job}}</p>
+             <h2> Bienvenue <span>{{user.first_name}}</span> <span>{{user.name}}</span>, </h2>
+                <p> Vous êtes inscrit sur le reseau social Groupomania depuis le <span>{{ dateFormat (user.created_at)}}</span> en tant que : {{user.job}}</p>
         </div>
 
         <div class="deleteprofil">
@@ -64,6 +64,7 @@
 </template>
 <script>
 import axios from 'axios';
+import moment from 'moment';
 import headers from '../components/header.vue';
 export default {
     name: 'Profil',
@@ -73,7 +74,7 @@ export default {
     },
     data() {
         return {
-            userProfil:{
+            user:{
                 id_users: localStorage.getItem("id_users"),
                 first_name:"",
                 name:"",
@@ -90,7 +91,7 @@ export default {
         }
     },
     mounted () {
-      axios.get(`http://localhost:3000/api/user/${ this.userProfil.id_users }`,
+      axios.get(`http://localhost:3000/api/user/${ this.user.id_users }`,
       {
           headers:{
               'Authorization': "Bearer "+ localStorage.getItem("token"),
@@ -98,30 +99,36 @@ export default {
           }
 
       })
-        .then(data => {
-            console.log(data)
-            this.userProfil.first_name = data.first_name;
-            this.userProfil.name = data.name;
-            this.userProfil.created_at = data.created_at;
-            this.userProfil.job = data.job;
+        .then(response => {
+            console.log(response)
+            this.user.first_name = response.data.first_name;
+            this.user.name = response.data.name;
+            this.user.created_at = response.data.created_at;
+            this.user.job = response.data.job;
         })
         .catch(error => console.log(error));
     },
     methods:{
+        //Affiche la date de publication au bon format
+        dateFormat(date){
+            if(date) {
+                return moment(String(date)).format('DD/MM/YYYY')
+            }
+        },
         //Modification pour les informations générales du compte utilisateur
         modifyOneUser(){
-            const first_name = this.input.first_name;
-            const name = this.input.name;
-            const email = this.input.email;
-            const job = this.input.job;
+            const userfirst_name = this.input.userfirst_name;
+            const username = this.input.username;
+            const useremail = this.input.useremail;
+            const userjob = this.input.userjob;
     
             axios.put("http://localhost:3000/api/user" + "/" + this.id_users,
             {
                 id_users: this.id_users,
-                first_name,
-                name,
-                email,
-                job
+                userfirst_name,
+                username,
+                useremail,
+                userjob
 
             },
             {

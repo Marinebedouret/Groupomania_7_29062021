@@ -56,6 +56,8 @@ export default{
      
     },
     methods: {
+
+        },
         send(){
             const title = this.input.title;
             const text = this.input.text;
@@ -92,5 +94,4 @@ export default{
       
     }
  
-}
 </script>
