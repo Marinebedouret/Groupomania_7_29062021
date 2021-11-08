@@ -72,7 +72,7 @@ exports.login = (req, res, next) => {
 //Profil de l'utilisateur 
 
 exports.getOneUser = (req, res, next) => {
-    models.User.findOne({where: {id_users: req.body.id_users}})
+    models.User.findOne({where: {id_users: req.params.id}})
     .then(user => {console.log(user)
         res.status(200).json(user)})
     .catch(error => res.status(500).json(error))
@@ -83,22 +83,30 @@ exports.getOneUser = (req, res, next) => {
 exports.getAllUser = (req, res, next) => {
     models.User.findAll()
     .then((users) => res.status(200).json(users))
-    .catch(err => res.status(400).json({err}));
+    .catch(error => res.status(400).json({error}));
 };
 
 
 //Modification du profil
 exports.modifyUser = (req, res, next) => {
-    models.User.findOne({ where: {id_user: res.params.id}})
-    .then((user) => {
-        first_name = req.body.first_name;
-        name = req.body.name;
-        job = req.body.job;
-        User.update()
-    .then(() => res.status(201).json({message: 'Votre compte est modifié !'}))
-    .catch(error => res.status(400).json ({error}));
-    })
-    .catch((error => res.status(500).json({error})));
+   const first_name = req.body.first_name;
+   const name = req.body.name;
+   const email = req.body.email;
+   const job = req.body.job;
+
+   //verification des champs remplis
+   if(first_name === null || first_name === '' || name === null || name === '' || email === null || email === '' || job === null || job === ""){
+       return res.status(400).json ({'error' : "Les champs 'nom','prénom', 'email' et 'job' ne sont pas renseignés !"})
+   }
+   const userObject = req.file ?
+   {
+       ...req.body.user,
+       picture: req.file.filename
+   } :{...req.body};
+
+   models.User.update({...userObject, id_users: req.body.id_users}, {where: {id_users: req.body.id_users}})
+   .then(()=> res.status(200).json ({message: "L'utilisateur est bien modifié !"}))
+   .catch(error => res.status(400).json ({error}));
 
 };
 

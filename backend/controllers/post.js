@@ -1,5 +1,6 @@
 const db = require('../models');
 const models = require('../models');
+const user = require('../models/user');
 
 //Création d'un post
 exports.createdPost = async (req, res) => {
@@ -13,7 +14,7 @@ exports.createdPost = async (req, res) => {
         id_users: req.body.id_users,
         title: req.body.title,
         text: req.body.text,
-        picture: req.body.picture,
+        picture:`${req.protocol}://${req.get('host')}/images/${req.body.filename}`,
         first_name: req.body.first_name,
         name: req.body.name
     };
@@ -28,6 +29,7 @@ exports.getAllPosts = (req, res, next) => {
     models.Post.findAll({
         include: ["user", "comments"]
     })
+    
     .then((posts) => res.status(200).json(posts))
     .catch(error => res.status(400).json({error}));
 };
@@ -56,13 +58,9 @@ exports.getOnePost = (req, res) => {
 
 //Suppression du post
 exports.deletePost = (req, res, next) => {
-    models.Post.findOne({where: {id_post: req.body.id_post}})
-    .then((post)=> {
-        models.Post.destroy({where: {id_post: req.body.id_post}})
+    models.Post.destroy({where: {id_post: req.body.id_post}})
         .then(() => res.status(200).json({message: 'Post supprimé !'}))
         .catch(error => res.status(400).json({error}));
-    })
-    .catch(error => res.status(500).json({error}));
 };
 
 //Modification du post
