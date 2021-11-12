@@ -15,7 +15,7 @@ exports.createComment = async (req, res, next) => {
 
 //Suppression d'un commentaire
 exports.deleteComment = (req, res, next) => {
-    models.Comment.findOne({where: {id: req.params.id}})
+    models.Comment.findOne({where: {id_post: req.params.id}})
     .then((comment)=> {
         models.Comment.destroy({where: {id:req.body.id_post}})
         .then(() => res.status(200).json({message: 'Commentaire supprimée'}))
@@ -26,7 +26,7 @@ exports.deleteComment = (req, res, next) => {
 
 //Afficher tous les commentaires
 exports.getAllComment = (req, res, next) => {
-    models.Comment.findAll({
+    models.Comment.findAll({where: {id_post:req.params.id},
         include: ["user", "post"]
     })
     .then((comments) => res.status(200).json(comments))
@@ -35,7 +35,7 @@ exports.getAllComment = (req, res, next) => {
 
 //Afficher un commentaire en fonction de l'id
 exports.getOneComment = (req, res, next) => {
-    models.Comment.findOne({where: {id_post: req.body.id_post, id_users: req.body.id_users},
+    models.Comment.findOne({where: {id_post: req.params.id},
         include: ["user", "post"]
     })
     
