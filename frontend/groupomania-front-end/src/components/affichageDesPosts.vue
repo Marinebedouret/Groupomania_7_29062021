@@ -14,36 +14,22 @@
             <p> Text du post : {{post.text}} </p>
 
         </div>
-        <div>
+
             <div>
                 <button v-if="id_users == post.id_users || post.user.isAdmin == 'true'" type="button"  v-on:click="deletePost(post.id_post)" class="delete-btn"> Supprimer </button>
             </div>
-            
-        </div>
+
+ 
+        <modify :id_post="post.id_post" :id_users="post.id_users"  v-bind:obtenir="obtenir" v-bind:modale="modale"></modify>
+        <div  v-if="id_users == post.id_users || post.user.isAdmin == 'true'" :id_post="post.id_post" v-on:click="modale" class="btn btn-success">Bouton pour modifier post</div>
         <!--<like :id_post="post.id_post" :id_users="post.id_users"></like>-->
+        <div class="container my-5">
+       
 
-            <!-- Affichage des commentaire + création des commentaires-->
+        <comments :id_post="post.id_post" v-bind:revele="revele" v-bind:toggleModale="toggleModale"></comments>
+        <div v-on:click="toggleModale" class="btn btn-success">Commentaires</div>
+        </div>
 
-        <div class="bloccomments">
-            <textarea type="text" rows="2" id="text" name="newComment" class="from-control" v-model="text" placeholder="Ajouter un commentaire..." ></textarea>
-            <button v-on:click="createComment(post.id_post)" type="submit" id="send_comment"> Publier </button>
-        </div>
-        <div>
-            <i  @click="displayComment(post.id_post)"  class="far fa-comment-alt"></i>
-            <span v-if="post.comments.length > 0" class="item_length">{{post.comments.length}}</span>
-        </div>
-        <div>
-            <div class="displayComment" v-for="comment in comments" :key="comment.id_comment">
-                <div class="comment_infos"> 
-                    <span>Posté le {{ dateFormat(comment.created_at)}} </span>
-                    <span>{{comment.user.first_name}} {{comment.user.name}}</span>
-                </div>
-            
-                <div class="viewText">
-                     <p>{{comment.text}}</p>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
 
@@ -53,14 +39,23 @@
 import axios from 'axios';
 import moment from 'moment';
 
+import comments from './affichageDesCommentaires.vue';
+import modify from './modify.vue';
+
+
+
+
+
 
 
 
 export default {
     name: "viewAllPosts",
     components: {
-
-
+         comments,
+         modify
+         
+         
     },
     data(){
         return {
@@ -72,11 +67,10 @@ export default {
             id_users: localStorage.getItem('id_users'),
             picture: "",
             posts: [],
-            post: "",
-            comment: "",
-            comments: [],
             text:"",
-            
+            revele: false,
+            obtenir: false
+
      
         }
     
@@ -99,50 +93,16 @@ export default {
         .catch(error => console.log(error));
     },
     methods:{
-        
-          //Affichage des commentaires
-        displayComment(id_post){
-            axios.get("http://localhost:3000/api/comment/" + id_post,
-
-            {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
-                    'Content-Type': 'application/json'
-                }
-    
-            })
-        .then(response => {
-            console.log(response)
-            this.comments = response.data;
-            console.log(this.comments)
-        })
-        .catch(error => console.log(error))
-         
+        //Ouverture de la fenêtre modale
+        toggleModale: function(){
+            this.revele = !this.revele
         },
-        //Création d'un commentaire
-        createComment(id_post) {
-            axios.post(`http://localhost:3000/api/comment/` + id_post,
-            {
-                id_users: this.id_users,
-                text: this.text,
-                id_post
 
-            },
-            {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem("token"),
-                    'Content-Type' : 'application/json'
-                }
-
-            })
-            .then(() => {
-                window.location.reload()
-
-               
-            })
-            .catch(error => console.log(error));
+        modale: function(){
+            this.obtenir = !this.obtenir
         },
-        
+
+
         //Affiche la date de publication au bon format
         dateFormat(date){
             if(date) {
@@ -162,8 +122,24 @@ export default {
            })
              .then(response => {
                  console.log(response)
+                 location.reload()
              })
             .catch(error => console.log(error));
+        },
+        modifiyPost(id_post){
+            axios.put(`http:/localhost:3000/api/post/` + id_post,
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                console.log(response)
+                location.reload()
+            })
+            .catch(error => console.log(error));
+
         },
     },
 }
