@@ -58,18 +58,24 @@ exports.getOnePost = (req, res) => {
 
 //Suppression du post
 exports.deletePost = (req, res, next) => {
-    models.Post.destroy({where: {id_post: req.body.id_post}})
+    models.Post.destroy({where: {id_post: req.params.id}})
         .then(() => res.status(200).json({message: 'Post supprimé !'}))
         .catch(error => res.status(400).json({error}));
 };
 
 //Modification du post
 exports.modifyPost = (req, res, next) => {
+    const title = req.body.title;
+    const text = req.body.text;
 
 
-    const postObject = req.body;
+    const postObject = req.file?  
+    {
+        ...req.body.post,
+        picture: req.file.filename
+    } : {...req.body};
     
-    models.Post.update({...postObject, id_users: req.body.id_users}, {where: {id_post: req.body.id_post}})
+    models.Post.update({...postObject, id_users: req.params.id_users}, {where: {id_post: req.params.id}})
     .then(() => res.status(200).json({message: "Le post est modifié !"}))
     .catch(error => res.status(400).json({error}));
 };

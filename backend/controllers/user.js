@@ -112,12 +112,12 @@ exports.modifyUser = (req, res, next) => {
 
 //suppression du compte
 exports.deleteUser = (req, res, next) =>{
-    models.User.findOne({where: {id_users: req.body.id_users}})
+    models.User.findOne({where: {id_users: req.params.id}})
     .then((user) => {
         console.log(user)
-        models.User.destroy({where: {id_users: req.body.id_users}})
+        models.User.destroy({where: {id_users: req.params.id}})
             .then(() => res.status(200).json({message:'Le compte est bien supprimé !'}))
             .catch(error => res.status(400).json({error: "Problème lors de la suppression de l'user"}));
     })
-    .catch (error => res.status(500).json({error}));
+    .catch (error => res.status(500).json({error: "Erreur serveur !"}));
 };
