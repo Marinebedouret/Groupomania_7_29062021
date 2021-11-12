@@ -2,6 +2,7 @@
     <section>
         <headers></headers>
         <div>
+            
             <h2>Création d'un post</h2>
             <form id="new-post">
 
@@ -57,7 +58,6 @@ export default{
     },
     methods: {
 
-        },
         send(){
             const title = this.input.title;
             const text = this.input.text;
@@ -82,8 +82,8 @@ export default{
             .then((response) => {
                 console.log(response)
                 if(response.ok) {
-                    window.location.reload();
                     this.input = {}
+                    location.reload(posts);
                 } else {
                     alert("Félicitation pour votre nouveau post sur le reseau social Groupomania ! Nous avons hâte de le lire !");
                 }
@@ -93,5 +93,6 @@ export default{
         }
       
     }
+}
  
 </script>

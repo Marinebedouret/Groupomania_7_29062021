@@ -2,7 +2,7 @@
     <section>
         <headers></headers>
         <div class="title">
-        <h1><img src="../assets/icon-above-font.png"></h1>
+        <img src="../assets/icon-above-font.png">
         </div>
         <div class="story">
         <h1> Groupomania est une entreprise spécialisée dans la grande distribution</h1>
