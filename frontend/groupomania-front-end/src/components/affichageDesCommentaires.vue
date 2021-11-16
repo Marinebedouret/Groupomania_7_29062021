@@ -8,41 +8,25 @@
                    <div v-on:click="toggleModale" class="btn-modale btn btn-danger">X</div>
                    <h2> commentaires affichage et création</h2>
 
-                   <form @submit.prevent= newComment()>
-                           <label for="new-comment">Laisser un commentaire :</label>
-                           <input id="send-comment" name="newComment" type="content" placeholder="Rédiger votre commentaire" v-model="text"/>
-                           <button class="btn btn-success">Envoyer</button>
-                   </form>
-                   <div class="comments" >
-                       <div v-for="comment in comments" :key="comment.id_comment">
-                           <div class="comment-infos"> Par {{comment.user.first_name}} {{comment.user.name}} le {{ dateFormat(comment.created_at)}}
-                               <span>{{comment.text}}</span>
+                   <div class="comments">
+                       <div v-for="comment in comments" :key="comment.id_comment" class="allComments">
+                           <div class="comment-infos">
+                               <span class="comment_name_first_name">Par {{comment.user.first_name}} {{comment.user.name}}</span> 
+                               <span class="comment_date"> le {{dateFormat(comment.created_at)}}</span>
                            </div>
+                           <p>Text du commentaire :{{comment.text}}</p>
                        </div>
+                  
 
-                   </div>
-               </div>
+                        <form @submit.prevent= newComment()>
+                           <label for="new-comment">Laisser un commentaire :</label>
+                           <input id="send-comment" name="newComment" type="content" required placeholder="Rédiger votre commentaire" v-model="input.text"/>
+                           <button class="btn btn-success">Envoyer</button>
+                        </form>
+                    </div>
+                </div>
 
            </div>
-
-        
-
-        <!--<div>-->
-            <!--<i  @click="displayComment()"  class="far fa-comment-alt"></i>-->
-            <!--<span v-if="post.comments.length > 0" class="item_length">{{post.comments.length}}</span>-->
-        <!--</div>-->
-        <!--<div>
-            <div class="displayComment" >
-                <div class="comment_infos"> 
-                    <span>Posté le  </span>
-                    <span>{</span>
-                </div>
-            
-                <div class="viewText">
-                     <p></p>
-                </div>
-            </div>
-        </div>-->
 
     
 </template>
@@ -53,29 +37,28 @@ import moment from 'moment';
 
 export default {
     name: "comments",
-    props: ['revele', 'toggleModale', 'id_post'],
+    props: {
+        revele: Boolean,
+        toggleModale: Function,
+        id_post: Number,
+        //id_users:Number
+        },
     data(){
         return{
-            comment:"",
-            comments: [],
-            text: "",
+            input:{
+                  text: "",
 
- 
+            },
+            //comment:"",
+            comments: [],
+            id_users:localStorage.getItem('id_users')
+            
         }
         
     },
     mounted(){
-        this.id_users = JSON.parse(localStorage.getItem("id_users"));
-        console.log(localStorage);
-        this.displayComment()
-
-    },
-    methods:{
         //Affichage des commentaires
-        displayComment(id){
-            const id_post = id;
- 
-            axios.get(`http://localhost:3000/api/comment` +  "/" + id_post,
+        axios.get(`http://localhost:3000/api/comment` + "/" + this.id_post,
             {
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem("token"),
@@ -86,11 +69,14 @@ export default {
         .then(response => {
             console.log(response)
             this.comments = response.data;
-            console.log(this.comments)
         })
         .catch(error => console.log(error))
-        },
-         
+   
+
+
+    },
+    methods:{
+
         //Affiche la date de publication au bon format
         dateFormat(date){
             if(date) {
@@ -98,23 +84,25 @@ export default {
             }
         },
         //Création d'un commentaire
-        newComment(id_post) {
-            const text = this.text
+        newComment() {
+            const text = this.input.text;
+            console.log(text)
 
-            axios.post(`http://localhost:3000/api/comment/${id_post}`,
+            axios.post("http://localhost:3000/api/comment/" + this.id_post,
             {
                 id_users: this.id_users,
                 text,
-                //id_post: this.id_post
+                id_post: this.id_post
             },
             {
                 headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                    'Authorization': 'Bearer ' + localStorage.getItem('token'),
                     'Content-Type' : 'application/json'
                 }
 
             })
             .then(() => {
+                 this.input = {}
                 //window.location.reload()
 
                

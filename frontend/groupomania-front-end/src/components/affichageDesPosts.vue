@@ -22,7 +22,6 @@
  
         <modify :id_post="post.id_post" :id_users="post.id_users"  v-bind:obtenir="obtenir" v-bind:modale="modale"></modify>
         <div  v-if="id_users == post.id_users || post.user.isAdmin == 'true'" :id_post="post.id_post" v-on:click="modale" class="btn btn-success">Bouton pour modifier post</div>
-        <!--<like :id_post="post.id_post" :id_users="post.id_users"></like>-->
         <div class="container my-5">
        
 
@@ -41,12 +40,6 @@ import moment from 'moment';
 
 import comments from './affichageDesCommentaires.vue';
 import modify from './modify.vue';
-
-
-
-
-
-
 
 
 export default {
@@ -93,10 +86,11 @@ export default {
         .catch(error => console.log(error));
     },
     methods:{
-        //Ouverture de la fenêtre modale
+        //Ouverture de la fenêtre modale des commentaires
         toggleModale: function(){
             this.revele = !this.revele
         },
+        //ouverture de la fenêtre modale pour modifier un post
 
         modale: function(){
             this.obtenir = !this.obtenir
@@ -126,21 +120,7 @@ export default {
              })
             .catch(error => console.log(error));
         },
-        modifiyPost(id_post){
-            axios.put(`http:/localhost:3000/api/post/` + id_post,
-            {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem("token"),
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                console.log(response)
-                location.reload()
-            })
-            .catch(error => console.log(error));
-
-        },
+        
     },
 }
 
