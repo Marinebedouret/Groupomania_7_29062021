@@ -27,6 +27,7 @@ exports.deleteComment = (req, res, next) => {
 //Afficher tous les commentaires
 exports.getAllComment = (req, res, next) => {
     models.Comment.findAll({where: {id_post:req.params.id},
+        //order: [['created_at', 'DESC']],
         include: ["user", "post"]
     })
     .then((comments) => res.status(200).json(comments))
@@ -35,7 +36,8 @@ exports.getAllComment = (req, res, next) => {
 
 //Afficher un commentaire en fonction de l'id
 exports.getOneComment = (req, res, next) => {
-    models.Comment.findOne({where: {id_post: req.params.id},
+    models.Comment.findOne({where: {id_post:req.params.id},
+        order: [['created_at', 'DESC']],
         include: ["user", "post"]
     })
     
