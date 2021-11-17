@@ -26,7 +26,8 @@ exports.createdPost = async (req, res) => {
 
 //Afficher tous les posts sur le mur
 exports.getAllPosts = (req, res, next) => {
-    models.Post.findAll({
+    models.Post.findAll({ 
+        order: [['created_at', 'DESC']],
         include: ["user", "comments"]
     })
     

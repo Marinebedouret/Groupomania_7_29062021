@@ -16,8 +16,8 @@ exports.createComment = async (req, res, next) => {
 //Suppression d'un commentaire
 exports.deleteComment = (req, res, next) => {
     models.Comment.findOne({where: {id_post: req.params.id}})
-    .then((comment)=> {
-        models.Comment.destroy({where: {id:req.body.id_post}})
+    .then(()=> {
+        models.Comment.destroy({where: {id_post:req.params.id}})
         .then(() => res.status(200).json({message: 'Commentaire supprimée'}))
         .catch(error => res.status(400).json({error}));
     })
@@ -26,9 +26,9 @@ exports.deleteComment = (req, res, next) => {
 
 //Afficher tous les commentaires
 exports.getAllComment = (req, res, next) => {
-    models.Comment.findAll({where: {id_post:req.params.id},
+    models.Comment.findAll({
         //order: [['created_at', 'DESC']],
-        include: ["user", "post"]
+        //include: ["user", "post"]
     })
     .then((comments) => res.status(200).json(comments))
     .catch(error => res.status(400).json({error}));
@@ -37,6 +37,7 @@ exports.getAllComment = (req, res, next) => {
 //Afficher un commentaire en fonction de l'id
 exports.getOneComment = (req, res, next) => {
     models.Comment.findOne({where: {id_post:req.params.id},
+        limit: 10,
         order: [['created_at', 'DESC']],
         include: ["user", "post"]
     })
