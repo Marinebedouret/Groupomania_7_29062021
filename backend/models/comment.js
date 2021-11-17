@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Comment.belongsTo(models.User,{
+      Comment.belongsTo(models.User,
+        {
         foreignKey: 'id_users',
         as: 'user',
         onDelete: 'CASCADE'
@@ -26,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     id_comment: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      field:'id_comment'
+  
     },
     id_users: {
       type: DataTypes.INTEGER,
