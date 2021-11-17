@@ -7,7 +7,7 @@ const commentCtrl = require('../controllers/comment');
 
 router.post('/:id', auth,commentCtrl.createComment);
 router.delete('/delete/:id', auth,commentCtrl.deleteComment);
-router.get('/:id', auth, commentCtrl.getAllComment);
+router.get('/', auth, commentCtrl.getAllComment);
 router.get('/:id', auth, commentCtrl.getOneComment);
 router.put('/:id', auth, commentCtrl.modifyComment )
 
