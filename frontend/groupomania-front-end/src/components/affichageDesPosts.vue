@@ -16,18 +16,35 @@
         </div>
 
             <div>
-                <button v-if="id_users == post.id_users || post.user.isAdmin == 'true'" type="button"  v-on:click="deletePost(post.id_post)" class="delete-btn"> Supprimer </button>
+                <button v-if="id_users == post.id_users || post.user.isAdmin == 'true'" type="button"  v-on:click="deletePost(post.id_post)" class="delete Post-btn"> Supprimer </button>
             </div>
 
  
-        <modify :id_post="post.id_post" :id_users="post.id_users"  v-bind:obtenir="obtenir" v-bind:modale="modale"></modify>
-        <div  v-if="id_users == post.id_users || post.user.isAdmin == 'true'" :id_post="post.id_post" v-on:click="modale" class="btn btn-success">Bouton pour modifier post</div>
-        <div class="container my-5">
-       
+        <modify :id_post="post.id_post"></modify>
 
-        <comments :id_post="post.id_post" v-bind:revele="revele" v-bind:toggleModale="toggleModale"></comments>
-        <div v-on:click="toggleModale" class="btn btn-success">Commentaires</div>
+        <i @click="displayComment(post.id_post)" v-on:click="viewComment" class="displayComment_item far fa-comment-alt">Affichage des commentaires</i>
+
+    
+
+        <div class="displayComment"> 
+            <div v-for="comment in comments" :key="comment.id_comment" class="allComments">
+                <div v-bind:showComment="showComment" v-if="showComment && post.id_post == comment.id_post">
+                    <div class="comment-infos">
+                        <span class="comment_name_first_name">Par {{comments.user.first_name}} {{comments.user.name}}</span> 
+                        <span class="comment_date"> le {{dateFormat(comments.created_at)}}</span>
+                    </div>
+                        <p>Text du commentaire :{{comments.text}}</p>
+                </div>
+            </div>
+            <div>
+                <i v-if="id_users == post.id_users || post.user.isAdmin == 'true'" v-on:click="deleteComment(post.id_post)" class="delete Comment_btn far fa-trash-alt"></i>
+            </div>
+            
         </div>
+        <comments :id_post="post.id_post"></comments>
+       
+        
+
 
     </div>
 </div>
@@ -45,8 +62,8 @@ import modify from './modify.vue';
 export default {
     name: "viewAllPosts",
     components: {
-         comments,
-         modify
+         modify,
+         comments
          
          
     },
@@ -60,9 +77,10 @@ export default {
             id_users: localStorage.getItem('id_users'),
             picture: "",
             posts: [],
+            comments:[],
+            //comments:"",
             text:"",
-            revele: false,
-            obtenir: false
+            showComment: false
 
      
         }
@@ -85,11 +103,47 @@ export default {
         })
         .catch(error => console.log(error));
     },
+    
     methods:{
-        //Ouverture de la fenêtre modale des commentaires
-        toggleModale: function(){
-            this.revele = !this.revele
+        //Function pour l'afficher les commentaires
+        viewComment:function(){
+            this.showComment =!this.showComment
+
         },
+        //Permet d'obtenir les commentaires sous les posts en fonction de l'id_post
+        displayComment(id_post){
+        axios.get("http://localhost:3000/api/comment" + "/"  + id_post,
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                    'Content-Type': 'application/json'
+                }
+    
+            })
+        .then(response => {
+            console.log(response)
+            this.comments = response.data;
+            console.log(this.comments)
+            
+        })
+        .catch(error => console.log(error))
+        },
+        //Supprimer un commentaire
+        deleteComment(id_post){
+            axios.delete(`http://localhost:3000/api/comment/delete` + "/" + id_post,
+            {
+                headers:{
+                    'Authorization': 'Bearer ' + localStorage.getItem("token"),
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => {
+                console.log(response)
+                location.reload()
+            })
+            .catch(error => console.log(error));
+        },
+
         //ouverture de la fenêtre modale pour modifier un post
 
         modale: function(){
