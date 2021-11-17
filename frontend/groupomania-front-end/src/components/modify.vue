@@ -1,26 +1,27 @@
 <template>
-<div class="bloc-modale" v-if="obtenir">
+    <div>
+         <button v-on:click="modale" class="btn btn-success">Modifier un post</button>
+         <!--Modifier un post-->
+        <div class="bloc-modale" v-if="obtenir">
+            <div class="overlay" v-on:click="modale"></div>
+                <div class="modale card">
+                    <div v-on:click="modale" class="btn-modale btn btn-danger">X</div>
+                        <h2>Contenu modale pour modifier un post</h2>
+                            <form @submit.prevent= modifiyPost()>
+                                <div>
+                                    <label for="modify-title">Titre du post : </label>
+                                    <input id="titleModify" name="title_modify" type="text" placeholder="Modifier le titre" v-model="input.title" />
+                                </div>
 
-    <div class="overlay" v-on:click="modale"></div>
-    <div class="modale card">
-        <div v-on:click="modale" class="btn-modale btn btn-danger">X</div>
-        <h2>Contenu modale pour modifier un post</h2>
-
-        <form @submit.prevent= modifiyPost()>
-            <div>
-            <label for="modify-title">Title : </label>
-            <input id="titleModify" name="title_modify" type="text" placeholder="modification du titre du post" v-model="input.title" />
-            </div>
-
-            <div>
-                <label for="modify-text">Text : </label>
-                <input id="textModify" name="text_modify" type="text" placeholder="Modification du text du post" v-model="input.text"/>
-            </div>
-            <button>Modifier</button>
-            
-        </form>
+                                <div>
+                                    <label for="modify-text">Texte du post : </label>
+                                    <input id="textModify" name="text_modify" type="text" placeholder="Modifier le texte" v-model="input.text"/>
+                                </div>
+                                    <button class="btn btn-success">Modifier</button>
+                            </form>
+                    </div>
+         </div>
     </div>
-</div>
  
 </template>
 
@@ -31,8 +32,7 @@ import axios from 'axios';
 export default {
     name: "modifyOnePost",
     props: {
-        obtenir: Boolean,
-        modale: Function,
+
         id_post: Number
     },
     data(){
@@ -42,15 +42,18 @@ export default {
             text:"",
 
             },
-            post: [],
+            obtenir: false,
+            //post: [],
             picture:"",
             id_users: localStorage.getItem('id_users'),
         }
     },
-    mounted(){
-
-    },
     methods:{
+        //Function pour ouvrir la fenêtre modifier un post
+        modale:function(){
+            this.obtenir = !this.obtenir
+        },
+
         modifiyPost(){
             const title = this.input.title;
             const text = this.input.text;
@@ -58,9 +61,7 @@ export default {
             axios.put("http://localhost:3000/api/post/" + this.id_post,
             {
                 title,
-                text,
-                id_users: this.id_users,
-                id_post:this.id_post
+                text
             },
             {
                 headers: {
@@ -71,7 +72,7 @@ export default {
             .then(response => {
                 console.log(response)
                 this.input = {}
-                //location.reload()
+                location.reload()
             })
             .catch(error => console.log(error));
 
