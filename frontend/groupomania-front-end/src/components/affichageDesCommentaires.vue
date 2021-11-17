@@ -1,34 +1,20 @@
 <template>
-
-           <!-- Affichage des commentaire + création des commentaires-->
+<div>
+    <button class="btn btn-success" v-on:click="toggleModale">Création d'un commentaire</button>
+           <!-- création des commentaires-->
            <div class="bloc-modale" v-if="revele">
-
                <div class="overlay" v-on:click="toggleModale"></div>
                <div class="modale card">
                    <div v-on:click="toggleModale" class="btn-modale btn btn-danger">X</div>
                    <h2> commentaires affichage et création</h2>
-
-                   <div class="comments">
-                       <div v-for="comment in comments" :key="comment.id_comment" class="allComments">
-                           <div class="comment-infos">
-                               <span class="comment_name_first_name">Par {{comment.user.first_name}} {{comment.user.name}}</span> 
-                               <span class="comment_date"> le {{dateFormat(comment.created_at)}}</span>
-                           </div>
-                           <p>Text du commentaire :{{comment.text}}</p>
-                       </div>
-                  
-
                         <form @submit.prevent= newComment()>
                            <label for="new-comment">Laisser un commentaire :</label>
-                           <input id="send-comment" name="newComment" type="content" required placeholder="Rédiger votre commentaire" v-model="input.text"/>
-                           <button class="btn btn-success">Envoyer</button>
+                           <input id="send-comment" name="newComment" type="content" required placeholder="Commentaire..." v-model="input.text"/>
+                           <button class="btn btn-success">Publier</button>
                         </form>
-                    </div>
                 </div>
-
            </div>
-
-    
+</div>
 </template>
 
 <script>
@@ -38,8 +24,6 @@ import moment from 'moment';
 export default {
     name: "comments",
     props: {
-        revele: Boolean,
-        toggleModale: Function,
         id_post: Number,
         //id_users:Number
         },
@@ -49,33 +33,18 @@ export default {
                   text: "",
 
             },
-            //comment:"",
-            comments: [],
+            revele: false,
             id_users:localStorage.getItem('id_users')
             
         }
         
     },
-    mounted(){
-        //Affichage des commentaires
-        axios.get(`http://localhost:3000/api/comment` + "/" + this.id_post,
-            {
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem("token"),
-                    'Content-Type': 'application/json'
-                }
-    
-            })
-        .then(response => {
-            console.log(response)
-            this.comments = response.data;
-        })
-        .catch(error => console.log(error))
-   
-
-
-    },
     methods:{
+        
+        toggleModale: function(){
+            this.revele = !this.revele
+        },
+
 
         //Affiche la date de publication au bon format
         dateFormat(date){
