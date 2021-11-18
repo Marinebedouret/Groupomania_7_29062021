@@ -14,7 +14,7 @@ exports.createdPost = async (req, res) => {
         id_users: req.body.id_users,
         title: req.body.title,
         text: req.body.text,
-        picture:`${req.protocol}://${req.get('host')}/images/${req.body.filename}`,
+        picture: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}`: req.body.picture,
         first_name: req.body.first_name,
         name: req.body.name
     };
@@ -68,12 +68,13 @@ exports.deletePost = (req, res, next) => {
 exports.modifyPost = (req, res, next) => {
     const title = req.body.title;
     const text = req.body.text;
+    console.log('file', req.file);
 
 
     const postObject = req.file?  
     {
         ...req.body.post,
-        picture: req.file.filename
+        picture: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : {...req.body};
     
     models.Post.update({...postObject, id_users: req.params.id_users}, {where: {id_post: req.params.id}})
