@@ -35,7 +35,7 @@ Le frontend de l'application est déjà founi.
 
 ### Installation du Frontend de l'application
 
-- Ouvrir le terminal sur le dossier Frontend et exécuter ``npm installe -g @vue/cli``.
+- Ouvrir le terminal sur le dossier Frontend et exécuter ``npm install -g @vue/cli``.
 - Puis ``npm install`` pour installer les dépendances.
 - A partir du sous-dossier "groupomania-front-end", exécutez ``npm install``, ``npm bootstrap`` puis ``npm run server``.
 - Le frontend de l'application doit fonctionner sur localhost avec le port par défaut 8080.
