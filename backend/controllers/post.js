@@ -50,7 +50,6 @@ exports.getAllPosts = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
     models.Post.findOne({where: {id_post: req.params.id}})
     .then(post => {
-        if(post) {
             if(post.picture != null){
                 const filename = post.picture.split('/images/')[1];
 
@@ -66,7 +65,6 @@ exports.deletePost = (req, res, next) => {
                 .then(() => res.status(200).json({message: 'Post supprimé !'}))
                 .catch(()=> res.status(500).json({error: 'Une erreur est survenue  !'}));
             }
-        }
     })  
 };
 
