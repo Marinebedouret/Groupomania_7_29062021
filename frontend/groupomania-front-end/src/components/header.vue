@@ -22,7 +22,7 @@ export default {
   methods: {
     disconnect() {
       localStorage.clear();
-      this.$router.push("/login");
+      this.$router.push("http://localhost:8080/");
       }
 
     }
