@@ -250,7 +250,7 @@ button{
   color:#aaa;
   margin-bottom:0;
 }
-@media(max-width:425px){
+@media(max-width: 768px){
     .userProfil{
         max-width: none;
         
