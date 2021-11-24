@@ -1,6 +1,7 @@
 const models = require('../models');
 const user = require('../models/user');
 const fs = require('fs');
+const jwt_decode = require('jwt-decode');
 
 //Création d'un post
 exports.createdPost = async (req, res) => {
@@ -27,12 +28,20 @@ exports.createdPost = async (req, res) => {
 
 //Afficher tous les posts sur le mur
 exports.getAllPosts = (req, res, next) => {
+    const token = req.headers.authorization.split(' ')[1];
+    var decoded = jwt_decode(token);
+    console.log(decoded);
+
     models.Post.findAll({ 
         order: [['created_at', 'DESC']],
         include: ["user", "comments"]
     })
-    
-    .then((posts) => res.status(200).json(posts))
+    .then((posts) => {
+        let user = models.User.findOne({where: {id_users: decoded.userId}})
+        .then((userData) => {
+            res.status(200).json({posts: posts, user:userData})})
+        })
+         
     .catch(error => res.status(400).json({error}));
 };
 
@@ -46,13 +55,19 @@ exports.deletePost = (req, res, next) => {
                 const filename = post.picture.split('/images/')[1];
 
                 fs.unlink(`images/${filename}`, () => {
-                    models.Post.destroy({where:{id_post: req.params.id}})
+                    models.Post.destroy({where:{id_post: req.params.id}
+                    })
+                    .then(() => res.status(200).json({message: 'Post supprimé !'}))
+                    .catch(error => res.status(400).json({error}));
                 })
+            } else {
+                models.Post.destroy({where: {id_post: req.params.id}
+                })
+                .then(() => res.status(200).json({message: 'Post supprimé !'}))
+                .catch(()=> res.status(500).json({error: 'Une erreur est survenue  !'}));
             }
         }
-    })
-        .then(() => res.status(200).json({message: 'Post supprimé !'}))
-        .catch(error => res.status(400).json({error}));
+    })  
 };
 
 //Modification du post

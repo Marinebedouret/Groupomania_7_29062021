@@ -29,7 +29,7 @@ exports.signup = async (req, res, next) => {
                 email: req.body.email,
                 password: req.body.password,
                 job: req.body.job,
-                isAdmin: req.body.isAdmin
+                isAdmin: false,
             })
             .then(() => res.status(201).json({ message: 'Utilisateur créé !'}))
             .catch(error => res.status(400).json ({error: "Problème lors de la création de l'utilisateur"}));
@@ -56,11 +56,11 @@ exports.login = (req, res, next) => {
             }
             res.status(200).send({
                 userId: user.id_users,
+                isAdmin: user.isAdmin,
                 token: jwt.sign(
                     {userId: user.id_users},
                     process.env.TOKEN,
                     { expiresIn: '24h'},
-                    {isAdmin: user.isAdmin}
                 )
             });
         })
@@ -72,7 +72,8 @@ exports.login = (req, res, next) => {
 //Profil de l'utilisateur 
 
 exports.getOneUser = (req, res, next) => {
-    models.User.findOne({where: {id_users: req.params.id}})
+    models.User.findOne({
+        where: {id_users: req.params.id}})
     .then(user => {console.log(user)
         res.status(200).json(user)})
     .catch(error => res.status(500).json(error))
