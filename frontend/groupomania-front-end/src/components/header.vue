@@ -22,7 +22,7 @@ export default {
   methods: {
     disconnect() {
       localStorage.clear();
-      this.$router.push("/");
+      this.$router.push("/login");
       }
 
     }

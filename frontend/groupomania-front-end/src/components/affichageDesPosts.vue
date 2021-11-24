@@ -4,13 +4,13 @@
     <div v-for="post in posts" :key="post.id_post" class="card">
         <div class="card-body">
         <div class="viewUser">
-            <i v-if="id_users == post.id_users || post.user.isAdmin == 'true'" type="button"  v-on:click="deletePost(post.id_post)" class="delete Post-btn far fa-trash-alt"> </i>
-        <modify :id_post="post.id_post"></modify>
+            <i v-if="id_users == post.id_users || user.isAdmin == 1" type="button"  v-on:click="deletePost(post.id_post)" class="delete Post-btn far fa-trash-alt"> </i>
+            <modify v-if="id_users == post.id_users || user.isAdmin == 1" :id_post="post.id_post"></modify>
 
             <i class="fas fa-calendar-day"> Posté le {{ dateFormat(post.created_at)}} </i>
             <i class="fas fa-user"> {{post.user.first_name}} {{post.user.name}}</i>
             <p> Job : {{post.user.job}}</p>
-            <p> {{post.user.isAdmin}}</p>
+            <p> {{user.isAdmin}}</p>
         </div>
         <div class="viewPost">
             <h3 class="card-title">{{post.title}}</h3>
@@ -36,8 +36,8 @@
                         <i class="fas fa-calendar-day"> {{dateFormat(comment.created_at)}}</i>
                     </div>
                         <p class="text">{{comment.text}}</p>
-                        <i v-if="id_users == post.id_users || post.user.isAdmin == 'true'" v-on:click="deleteComment(comment.id_comment)" class="delete Comment_btn far fa-trash-alt"></i>
-                        <modifyComment v-if="id_users == post.id_users || post.user.isAdmin == 'true'" :id_comment="comment.id_comment"></modifyComment>
+                        <i v-if="id_users == post.id_users || user.isAdmin == 1" v-on:click="deleteComment(comment.id_comment)" class="delete Comment_btn far fa-trash-alt"></i>
+                        <modifyComment v-if="id_users == post.id_users || user.isAdmin == 1" :id_comment="comment.id_comment"></modifyComment>
                 </div>
             </div>
             
@@ -70,10 +70,10 @@ export default {
     },
     data(){
         return {
+            user:"",
             first_name:"",
             name: "",
             job:"",
-            isAdmin:"",
             id_post:"",
             id_comment:"",
             id_users: localStorage.getItem('id_users'),
@@ -101,7 +101,8 @@ export default {
         })
         .then(response => {
             console.log(response)
-            this.posts = response.data;
+            this.posts = response.data.posts;
+            this.user = response.data.user;
             console.log(this.posts)
             
         })
@@ -175,7 +176,7 @@ export default {
            })
              .then(response => {
                  console.log(response)
-                 location.reload()
+                 //location.reload()
              })
             .catch(error => console.log(error));
         },
