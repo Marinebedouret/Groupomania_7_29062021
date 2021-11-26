@@ -43,16 +43,20 @@ Le frontend de l'application est déjà founi.
 
 - Clonez ce repository.
 - Ouvrir le terminal sur le dossier Backend et exécuter ``npm install`` pour installer les dépendances puis ``npm i nodemon``.
+- Création du fichier ``.env`` avec l'aide du fichier ``.env.example`` pour pouvoir se connecter à l'application.
 - Puis lancez le serveur : ``npm run dev`` dans le terminal les messages listening on port 3000 va apparaître.
 - Le serveur doit fonctionner sur localhost avec le port par défaut 3000.
 
 ### Base de données
 - Se connecter au serveur MySQL de votre choix. 
 - Exécuter la commande : CREATE DATABASE ``groupomania``.
+- Vous trouverez le fichier config.js dans le dossier config pour modifier les informations de connexion à la base de donées
 - Vérifiez les identifiants dans le fichier config.json dans le Backend.
 - Importer le fichier ``groupomania_sauvegarde.sql``.
 ``mysql -u root -p groupomania < groupomania_sauvegarde.sql``
 - Identifiant et mot de passe admin vous sont fourni dans un fichier admin.
+
+
 
 
 ## Auteur
