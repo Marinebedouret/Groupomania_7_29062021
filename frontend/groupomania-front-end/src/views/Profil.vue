@@ -16,7 +16,7 @@
         </div>
 
         <div class="infoducompte">
-            <p class="textinfos">Informations générales du compte utilisateur </p>
+            <p class="textinfos">Modification du compte utilisateur </p>
             <form id="newProfil">
                 <div class="form-group">
                     <label for="firstName">Prénom * : </label>
